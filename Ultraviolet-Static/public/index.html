@@ -167,5 +167,23 @@
   <span>CGPUP Frontend &copy; Crafted Gamz 2023 - 2025</span>
 </footer>
   <iframe style="display: none;" id="uv-frame"></iframe>
+<script src="blacklist.js"></script>
+<script>
+  document.getElementById("uv-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const input = document.getElementById("uv-address").value;
+
+    if (window.nsfwBlocker.shouldBlock(input)) {
+      alert("⚠️ This content is blocked due to inappropriate or unsafe material.");
+      return;
+    }
+
+    const searchEngine = document.getElementById("uv-search-engine").value;
+    const finalURL = input.startsWith("http") ? input : searchEngine.replace("%s", encodeURIComponent(input));
+
+    window.location.href = __uv$config.prefix + __uv$config.encodeUrl(finalURL);
+  });
+</script>
+
 </body>
 </html>
