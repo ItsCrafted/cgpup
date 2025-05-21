@@ -174,7 +174,7 @@
     const input = document.getElementById("uv-address").value;
 
     if (window.nsfwBlocker.shouldBlock(input)) {
-      alert("⚠️ This content is blocked due to inappropriate or unsafe material.");
+      window.location.href = "no.html";
       return;
     }
 
@@ -184,6 +184,5 @@
     window.location.href = __uv$config.prefix + __uv$config.encodeUrl(finalURL);
   });
 </script>
-
 </body>
 </html>
