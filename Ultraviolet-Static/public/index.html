@@ -167,43 +167,27 @@
   <span>CGPUP Frontend &copy; Crafted Gamz 2023 - 2025</span>
 </footer>
   <iframe style="display: none;" id="uv-frame"></iframe>
-  <script>
-    const blockedDomains = ["pornhub.com", "xvideos.com", "xnxx.com", "onlyfans.com", "rule34.xxx",
-    "redtube.com", "brazzers.com", "xhamster.com", "hqporner.com", "leakgirls.com",
-    "f95zone.to", "sex.com", "efukt.com", "spankbang.com", "camwhores.tv", "tnaflix.com",
-    "e621.net", "nhentai.net", "hentaihaven.xxx", "hclips.com", "javhub.net",
-    "asstr.org", "literotica.com", "r34.xxx", "fapello.com", "nudevista.com",
-    "theync.com", "motherless.com", "xart.com", "metart.com", "bangbros.com",
-    "porn.com", "tubepornclassic.com", "youjizz.com", "porn555.com", "beeg.com",
-    "xvideos2.com", "hotmovs.com", "nuvid.com", "porndig.com", "youporn.com",
-    "xxxymovies.com", "sunporno.com", "drtuber.com", "eporner.com", "tube8.com",
-    "4tube.com", "fux.com", "xxx.com", "tubepleer.com", "pornhd.com",
-    "javlibrary.com", "javdb.com", "javfree.me", "javmost.com", "javseen.com",
-    "javmodel.com", "javhdporn.net", "javhd.net", "pornhd.net", "japaneseporn.xxx",
-    "hentaiverse.org", "hentai-foundry.com", "hentai2read.com", "hentaiheroes.com",
-    "hitomi.la", "pururin.io", "asmhentai.com", "hanime.tv", "hentaigasm.com",
-    "animehentai.xxx", "fakku.net", "erofus.com", "pornerbros.com", "adultvideosapi.com"];
-    const nsfwKeywords = [    "fuck", "shit", "bitch", "asshole", "dick", "pussy", "cunt", "faggot", "cock",
-    "damn", "bastard", "slut", "whore", "douche", "fucker", "prick", "twat", "bollocks",
-    "bugger", "bloody", "arsehole", "crap", "piss", "wanker", "knob", "tosser", "shag",
-    "slag", "tit", "tits", "cum", "jizz", "nigger", "nigga", "retard", "tranny", "homo", "hentai"];
+<script>
+  const ipBlacklist = [
+    "",
+    "123.45.67.89"
+  ];
 
-    function shouldRedirect(input) {
-      const text = input.toLowerCase();
-      return blockedDomains.some(domain => text.includes(domain)) ||
-             nsfwKeywords.some(word => text.includes(word));
+  async function checkIPAndRedirect() {
+    try {
+      const res = await fetch("https://api64.ipify.org?format=json");
+      const data = await res.json();
+      const ip = data.ip;
+
+      if (ipBlacklist.includes(ip)) {
+        window.location.href = "https://www.google.com";
+      }
+    } catch (err) {
+      console.error("IP fetch failed", err);
     }
+  }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const input = document.getElementById("uv-address");
-      if (!input) return;
-
-      input.addEventListener("input", function () {
-        if (shouldRedirect(input.value)) {
-          window.location.href = "no.html";
-        }
-      });
-    });
-  </script>
+  document.addEventListener("DOMContentLoaded", checkIPAndRedirect);
+</script>
 </body>
 </html>
