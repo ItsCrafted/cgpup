@@ -32,9 +32,6 @@ function search(input, template) {
 
   const lowerInput = input.toLowerCase();
 
-  if (lowerInput.endsWith(".com/crazy")) {
-  return "https://crazygames.com";
-}
 
   for (const word of blacklistedWords) {
     if (lowerInput.includes(word)) {
