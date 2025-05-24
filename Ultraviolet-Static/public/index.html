@@ -134,6 +134,23 @@
   padding: 10px 0;
   color: white;
 }
+  #hot-links button.hotlink-btn {
+    background: #00ffe5;
+    border: none;
+    border-radius: 15px;
+    padding: 12px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+  }
+
+  #hot-links button.hotlink-btn:hover {
+    background: #96f3f5;
+  }
+</style>
 
   </style>
 </head>
@@ -141,10 +158,7 @@
 <body>
   <iframe src="bg.html" id="bgFrame"></iframe>
 
-  <div
-    title="Ultraviolet Logo"
-    class="flex-center logo-wrapper header-center"
-  >
+  <div title="Ultraviolet Logo"class="flex-center logo-wrapper header-center">
     <h1>Search</h1>
 <span style="color: white;">
   <strong style="color: #96f3f5;">C</strong>rafted 
@@ -163,6 +177,29 @@
   />
   <input id="uv-address" type="text" placeholder="Search the web freely with CGPUP, powered by Ultraviolet" />
 </form>
+
+<span style="display: block; text-align: center; margin: 30px 0; font-weight: bold; color: white; font-size: 20px;">
+  Hotlinks:
+</span>
+
+<div id="hot-links" style="margin-top: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 600px; margin-left: auto; margin-right: auto;">
+  <button onclick="quickLaunch('https://youtube.com')" class="hotlink-btn" title="YouTube">YouTube</button>
+  <button onclick="quickLaunch('https://www.google.com')" class="hotlink-btn" title="Google">Google</button>
+  <button onclick="quickLaunch('https://discord.com')" class="hotlink-btn" title="Discord">Discord</button>
+  <button onclick="quickLaunch('https://www.tiktok.com')" class="hotlink-btn" title="TikTok">TikTok</button>
+  <button onclick="quickLaunch('https://www.instagram.com')" class="hotlink-btn" title="Instagram">Instagram</button>
+  <button onclick="quickLaunch('https://twitter.com')" class="hotlink-btn" title="Twitter/X">Twitter/X</button>
+  <button onclick="quickLaunch('https://www.reddit.com')" class="hotlink-btn" title="Reddit">Reddit</button>
+  <button onclick="quickLaunch('https://www.twitch.tv')" class="hotlink-btn" title="Twitch">Twitch</button>
+  <button onclick="quickLaunch('https://www.disneyplus.com')" class="hotlink-btn" title="Disney Plus">Disney Plus</button>
+  <button onclick="quickLaunch('https://www.facebook.com')" class="hotlink-btn" title="Facebook">Facebook</button>
+  <button onclick="quickLaunch('https://www.netflix.com')" class="hotlink-btn" title="Netflix">Netflix</button>
+  <button onclick="quickLaunch('https://www.linkedin.com')" class="hotlink-btn" title="LinkedIn">LinkedIn</button>
+  <button onclick="quickLaunch('https://www.pinterest.com')" class="hotlink-btn" title="Pinterest">Pinterest</button>
+  <button onclick="quickLaunch('https://www.snapchat.com')" class="hotlink-btn" title="Snapchat">Snapchat</button>
+  <button onclick="quickLaunch('https://web.whatsapp.com')" class="hotlink-btn" title="WhatsApp Web">WhatsApp Web</button>
+  <button onclick="quickLaunch('https://github.com')" class="hotlink-btn" title="GitHub">GitHub</button>
+</div>
 
   <div class="desc left-margin">
     <p id="uv-error"></p>
@@ -194,6 +231,14 @@
   }
 
   document.addEventListener("DOMContentLoaded", checkIPAndRedirect);
+
+  function quickLaunch(url) {
+  const input = document.getElementById('uv-address');
+  input.value = url;
+  document.getElementById('uv-form').requestSubmit();
+}
+
+
 </script>
 </body>
 </html>
