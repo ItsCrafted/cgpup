@@ -50,7 +50,7 @@ function search(input, template) {
   } catch (err) {}
 
   try {
-    const url = new URL(`http://${input}`);
+    const url = new URL(http://${input});
     if (blacklistedDomains.includes(url.hostname)) {
       window.location.href = "https://cgamz.site/cgpup-links/no";
       return;

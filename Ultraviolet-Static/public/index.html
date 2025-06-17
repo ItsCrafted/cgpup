@@ -235,11 +235,26 @@
   document.getElementById('uv-form').requestSubmit();
 }
 
+import { search } from './search.js';
 
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("uv-form");
+  const input = document.getElementById("uv-address");
+  const engine = document.getElementById("uv-search-engine");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const query = input.value.trim();
+    const template = engine.value;
+    if (!query) return;
+    await search(query, template);
+  });
+});
 </script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+  import { search } from './uv/uv.bundle.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyCLL2JZUBJwISsLljfMN4wAr3ZSRd4A1Jo",
@@ -255,30 +270,37 @@
   const db = getFirestore(app);
   const visitsRef = collection(db, "visits");
 
-  const form = document.getElementById("uv-form");
-  const input = document.getElementById("uv-address");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const query = input.value.trim();
-    if (!query) return;
-
+  async function logToFirebase(input) {
     try {
       const res = await fetch("https://api64.ipify.org?format=json");
-      const data = await res.json();
-      const ip = data.ip;
-
+      const { ip } = await res.json();
       await addDoc(visitsRef, {
         ip,
-        query,
+        query: input.toLowerCase(),
         timestamp: serverTimestamp()
       });
     } catch (err) {
-      console.error("Logging error:", err);
+      console.warn("Logging to Firebase failed:", err);
     }
+  }
 
-    form.submit(); // Proceed with normal submission
+  const form = document.getElementById("uv-form");
+  const input = document.getElementById("uv-address");
+  const searchEngine = document.getElementById("uv-search-engine").value;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const val = input.value.trim();
+    if (!val) return;
+
+    logToFirebase(val);
+
+    // Use UV search() function to resolve full URL
+    const url = await search(val, searchEngine);
+    window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
   });
 </script>
+
 </body>
 </html>
