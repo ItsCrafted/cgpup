@@ -32,7 +32,7 @@ function search(input, template) {
 
   const lowerInput = input.toLowerCase();
 
-
+  // Check for blacklisted words
   for (const word of blacklistedWords) {
     if (lowerInput.includes(word)) {
       window.location.href = "no.html";
@@ -40,6 +40,7 @@ function search(input, template) {
     }
   }
 
+  // Try to parse as full URL
   try {
     const url = new URL(input);
     if (blacklistedDomains.includes(url.hostname)) {
@@ -47,16 +48,25 @@ function search(input, template) {
       return;
     }
     return url.toString();
-  } catch (err) {}
+  } catch (err) {
+    // Not a valid URL, continue
+  }
 
+  // Try to parse as domain (add http://)
   try {
-    const url = new URL(http://${input});
+    const url = new URL(`http://${input}`); // Fixed: Added backticks for template literal
     if (blacklistedDomains.includes(url.hostname)) {
-      window.location.href = "https://cgamz.site/cgpup-links/no";
+      window.location.href = "no.html";
       return;
     }
     if (url.hostname.includes(".")) return url.toString();
-  } catch (err) {}
+  } catch (err) {
+    // Not a valid domain, continue
+  }
 
+  // Default to search query
   return template.replace("%s", encodeURIComponent(input));
 }
+
+// Export the function so it can be imported
+export { search };
