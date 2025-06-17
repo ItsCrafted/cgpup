@@ -251,56 +251,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-  import { search } from './uv/uv.bundle.js';
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCLL2JZUBJwISsLljfMN4wAr3ZSRd4A1Jo",
-    authDomain: "craftedgamzvisits.firebaseapp.com",
-    projectId: "craftedgamzvisits",
-    storageBucket: "craftedgamzvisits.firebase-storage.app",
-    messagingSenderId: "935169016483",
-    appId: "1:935169016483:web:0ea28fbc25e9f390723516",
-    measurementId: "G-23C7D06VFD"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const visitsRef = collection(db, "visits");
-
-  async function logToFirebase(input) {
-    try {
-      const res = await fetch("https://api64.ipify.org?format=json");
-      const { ip } = await res.json();
-      await addDoc(visitsRef, {
-        ip,
-        query: input.toLowerCase(),
-        timestamp: serverTimestamp()
-      });
-    } catch (err) {
-      console.warn("Logging to Firebase failed:", err);
-    }
-  }
-
-  const form = document.getElementById("uv-form");
-  const input = document.getElementById("uv-address");
-  const searchEngine = document.getElementById("uv-search-engine").value;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const val = input.value.trim();
-    if (!val) return;
-
-    logToFirebase(val);
-
-    // Use UV search() function to resolve full URL
-    const url = await search(val, searchEngine);
-    window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
-  });
-</script>
-
 </body>
 </html>
