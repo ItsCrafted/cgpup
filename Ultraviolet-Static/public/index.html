@@ -230,26 +230,110 @@
   document.addEventListener("DOMContentLoaded", checkIPAndRedirect);
 
   function quickLaunch(url) {
-  const input = document.getElementById('uv-address');
-  input.value = url;
-  document.getElementById('uv-form').requestSubmit();
-}
+    const input = document.getElementById('uv-address');
+    input.value = url;
+    document.getElementById('uv-form').dispatchEvent(new Event('submit'));
+  }
 
-import { search } from './search.js';
+  // Search function (copied from your search.js)
+  function search(input, template) {
+    const blacklistedDomains = [
+      "pornhub.com", "xvideos.com", "redtube.com", "xnxx.com", "tube8.com", "youjizz.com", "brazzers.com", "bangbros.com", "porn.com", "adultfriendfinder.com", "youporn.com", "spankwire.com", "nuvid.com", "tnaflix.com", "thumbzilla.com", "xhamster.com", "hentaihaven.xxx", "eroprofile.com", "cam4.com", "chaturbate.com",
+      // ... (your full blacklist here)
+    ];
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("uv-form");
-  const input = document.getElementById("uv-address");
-  const engine = document.getElementById("uv-search-engine");
+    const blacklistedWords = [
+      "adult", "porn", "xxx", "sex", "erotic", "escort", "nude", "naked", "fetish", "hentai", "gayporn", "lesbianporn", "hardcore", "bdsm", "camgirl", "milf", "incest", "teenporn", "anal", "pussy", "dick", "cock", "boobs", "tits", "blowjob", "cum", "orgy", "voyeur", "sexchat", "pornhub", "xvideos", "redtube", "xnxx", "tube8", "youjizz", "brazzers", "bangbros", "xxxvideos", "adultfriendfinder", "pornsite", "sexshop", "erotica", "nudity"
+    ];
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const query = input.value.trim();
-    const template = engine.value;
-    if (!query) return;
-    await search(query, template);
+    const lowerInput = input.toLowerCase();
+
+    // Check for blacklisted words
+    for (const word of blacklistedWords) {
+      if (lowerInput.includes(word)) {
+        window.location.href = "no.html";
+        return null;
+      }
+    }
+
+    // Try to parse as full URL
+    try {
+      const url = new URL(input);
+      if (blacklistedDomains.includes(url.hostname)) {
+        window.location.href = "no.html";
+        return null;
+      }
+      return url.toString();
+    } catch (err) {
+      // Not a valid URL, continue
+    }
+
+    // Try to parse as domain (add http://)
+    try {
+      const url = new URL(`http://${input}`);
+      if (blacklistedDomains.includes(url.hostname)) {
+        window.location.href = "no.html";
+        return null;
+      }
+      if (url.hostname.includes(".")) return url.toString();
+    } catch (err) {
+      // Not a valid domain, continue
+    }
+
+    // Default to search query
+    return template.replace("%s", encodeURIComponent(input));
+  }
+
+  // Main form handler
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("uv-form");
+    const input = document.getElementById("uv-address");
+    const engine = document.getElementById("uv-search-engine");
+    const frame = document.getElementById("uv-frame");
+    const errorEl = document.getElementById("uv-error");
+    const errorCode = document.getElementById("uv-error-code");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const query = input.value.trim();
+      const template = engine.value;
+      
+      if (!query) return;
+
+      try {
+        // Clear previous errors
+        errorEl.textContent = "";
+        errorCode.textContent = "";
+
+        // Process the input through your search function
+        const url = search(query, template);
+        
+        if (!url) return; // Blocked by search function
+
+        console.log("Navigating to:", url);
+
+        // Check if UV is loaded
+        if (typeof __uv$config === 'undefined') {
+          throw new Error("Ultraviolet not loaded. Make sure uv.bundle.js and uv.config.js are loaded.");
+        }
+
+        // Navigate using UV
+        const uvUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
+        
+        // Option 1: Navigate in iframe
+        frame.src = uvUrl;
+        frame.style.display = "block";
+        
+        // Option 2: Navigate in same window (uncomment if preferred)
+        // window.location.href = uvUrl;
+        
+      } catch (err) {
+        console.error("Navigation error:", err);
+        errorEl.textContent = "Error: " + err.message;
+        errorCode.textContent = err.stack;
+      }
+    });
   });
-});
 </script>
 </body>
 </html>
