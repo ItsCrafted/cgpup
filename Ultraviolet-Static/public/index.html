@@ -8,118 +8,15 @@
   <script src="uv/uv.bundle.js" defer></script>
   <script src="uv/uv.config.js" defer></script>
   <script src="index.js" defer></script>
-</head>
-<body>
-  <div class="tab-bar" id="tab-bar"></div>
-  <div class="chrome-bar">
-    <div class="controls">
-      <button onclick="goHome()" title="Home">🏠</button>
-      <button onclick="goBack()" title="Back">←</button>
-      <button onclick="goForward()" title="Forward">→</button>
-      <button onclick="reloadFrame()" title="Reload">⟳</button>
-    </div>
-    <input id="uv-address" type="text" placeholder="Search or enter address" />
-  </div>
-  <div class="bookmarks-bar">
-    <button onclick="navigate('https://youtube.com')">YouTube</button>
-    <button onclick="navigate('https://discord.com')">Discord</button>
-    <button onclick="navigate('https://reddit.com')">Reddit</button>
-    <button onclick="navigate('https://github.com')">GitHub</button>
-  </div>
-
-  <iframe id="uv-frame" style="width: 100%; height: calc(100vh - 108px); border: none;"></iframe>
-
-  <script>
-    const input = document.getElementById('uv-address');
-    const frame = document.getElementById('uv-frame');
-    const tabBar = document.getElementById('tab-bar');
-
-    let tabs = [];
-    let currentTab = 0;
-
-    function createTab(title = 'New Tab', url = 'home.html') {
-      const id = tabs.length;
-      tabs.push({ title, url });
-      renderTabs();
-      switchTab(id);
-    }
-
-    function switchTab(index) {
-      currentTab = index;
-      const tab = tabs[index];
-      tabBar.querySelectorAll('.tab').forEach((el, i) => {
-        el.classList.toggle('active', i === index);
-      });
-      if (!tab.url.startsWith('http')) {
-        frame.src = tab.url;
-        input.value = '';
-      } else {
-        const fullUrl = __uv$config.prefix + __uv$config.encodeUrl(tab.url);
-        frame.src = fullUrl;
-        input.value = tab.url;
-      }
-    }
-
-    function renderTabs() {
-      tabBar.innerHTML = '';
-      tabs.forEach((tab, i) => {
-        const el = document.createElement('div');
-        el.className = 'tab' + (i === currentTab ? ' active' : '');
-        el.textContent = tab.title;
-        el.onclick = () => switchTab(i);
-        tabBar.appendChild(el);
-      });
-      const addBtn = document.createElement('div');
-      addBtn.className = 'tab';
-      addBtn.textContent = '+';
-      addBtn.onclick = () => createTab();
-      tabBar.appendChild(addBtn);
-    }
-
-    function navigate(url) {
-      if (!url.startsWith('http')) url = 'https://' + url;
-      tabs[currentTab].url = url;
-      tabs[currentTab].title = new URL(url).hostname;
-      const uvUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
-      frame.src = uvUrl;
-      input.value = url;
-      renderTabs();
-    }
-
-    input.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        navigate(input.value.trim());
-      }
-    });
-
-    function goHome() {
-      tabs[currentTab].url = 'home.html';
-      tabs[currentTab].title = 'CGPUP';
-      frame.src = 'home.html';
-      input.value = '';
-      renderTabs();
-    }
-
-    function goBack() {
-      frame.contentWindow.history.back();
-    }
-
-    function goForward() {
-      frame.contentWindow.history.forward();
-    }
-
-    function reloadFrame() {
-      frame.contentWindow.location.reload();
-    }
-
-    window.onload = () => createTab('CGPUP', 'home.html');
-  </script>
-
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: #202124;
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     .tab-bar {
@@ -135,10 +32,12 @@
       border-radius: 4px 4px 0 0;
       cursor: pointer;
       margin-right: 4px;
+      user-select: none;
     }
 
     .tab.active {
       background: #444;
+      font-weight: bold;
     }
 
     .chrome-bar {
@@ -157,6 +56,7 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 16px;
+      user-select: none;
     }
 
     #uv-address {
@@ -188,7 +88,157 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
+      user-select: none;
+    }
+
+    #uv-frame {
+      width: 100%;
+      height: calc(100vh - 108px);
+      border: none;
+      flex-grow: 1;
+      display: block;
+    }
+
+    #home-content {
+      padding: 20px;
+      flex-grow: 1;
+      background: #181818;
+      overflow-y: auto;
+      display: none;
+      color: white;
     }
   </style>
+</head>
+<body>
+  <div class="tab-bar" id="tab-bar"></div>
+
+  <div class="chrome-bar">
+    <div class="controls">
+      <button onclick="goHome()" title="Home">🏠</button>
+      <button onclick="goBack()" title="Back">←</button>
+      <button onclick="goForward()" title="Forward">→</button>
+      <button onclick="reloadFrame()" title="Reload">⟳</button>
+    </div>
+    <input id="uv-address" type="text" placeholder="Search or enter address" />
+  </div>
+
+  <div class="bookmarks-bar">
+    <button onclick="navigate('https://youtube.com')">YouTube</button>
+    <button onclick="navigate('https://discord.com')">Discord</button>
+    <button onclick="navigate('https://reddit.com')">Reddit</button>
+    <button onclick="navigate('https://github.com')">GitHub</button>
+  </div>
+
+  <iframe id="uv-frame"></iframe>
+
+  <div id="home-content">
+    <h2>Welcome to CGPUP Home</h2>
+    <p>This is your proxy home page. Enter a URL above or use bookmarks.</p>
+  </div>
+
+  <script>
+    const input = document.getElementById('uv-address');
+    const frame = document.getElementById('uv-frame');
+    const tabBar = document.getElementById('tab-bar');
+    const homeContent = document.getElementById('home-content');
+
+    let tabs = [];
+    let currentTab = 0;
+
+    function createTab(title = 'New Tab', url = 'home.html') {
+      const id = tabs.length;
+      tabs.push({ title, url });
+      renderTabs();
+      switchTab(id);
+    }
+
+    function switchTab(index) {
+      currentTab = index;
+      const tab = tabs[index];
+      tabBar.querySelectorAll('.tab').forEach((el, i) => {
+        el.classList.toggle('active', i === index);
+      });
+
+      if (tab.url === 'home.html') {
+        frame.style.display = 'none';
+        homeContent.style.display = 'block';
+        input.value = '';
+      } else {
+        frame.style.display = 'block';
+        homeContent.style.display = 'none';
+        if (!tab.url.startsWith('http')) {
+          frame.src = tab.url;
+          input.value = '';
+        } else {
+          const fullUrl = __uv$config.prefix + __uv$config.encodeUrl(tab.url);
+          frame.src = fullUrl;
+          input.value = tab.url;
+        }
+      }
+    }
+
+    function renderTabs() {
+      tabBar.innerHTML = '';
+      tabs.forEach((tab, i) => {
+        const el = document.createElement('div');
+        el.className = 'tab' + (i === currentTab ? ' active' : '');
+        el.textContent = tab.title;
+        el.onclick = () => switchTab(i);
+        tabBar.appendChild(el);
+      });
+      const addBtn = document.createElement('div');
+      addBtn.className = 'tab';
+      addBtn.textContent = '+';
+      addBtn.onclick = () => createTab();
+      tabBar.appendChild(addBtn);
+    }
+
+    function navigate(url) {
+      if (!url.startsWith('http')) url = 'https://' + url;
+      tabs[currentTab].url = url;
+      tabs[currentTab].title = new URL(url).hostname;
+      renderTabs();
+      switchTab(currentTab);
+    }
+
+    input.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        navigate(input.value.trim());
+      }
+    });
+
+    function goHome() {
+      tabs[currentTab].url = 'home.html';
+      tabs[currentTab].title = 'CGPUP';
+      renderTabs();
+      switchTab(currentTab);
+    }
+
+    function goBack() {
+      try {
+        frame.contentWindow.history.back();
+      } catch {
+        // ignore errors
+      }
+    }
+
+    function goForward() {
+      try {
+        frame.contentWindow.history.forward();
+      } catch {
+        // ignore errors
+      }
+    }
+
+    function reloadFrame() {
+      try {
+        frame.contentWindow.location.reload();
+      } catch {
+        // ignore errors
+      }
+    }
+
+    window.onload = () => createTab('CGPUP', 'home.html');
+  </script>
 </body>
 </html>
