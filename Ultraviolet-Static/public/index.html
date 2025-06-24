@@ -1,244 +1,427 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CGPUP - Chromium Mode</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <title>CGPUP</title>
+  <meta
+    name="description"
+    content="Crafted Gamz Private Unblocked Proxy (CGPUP) is a free web proxy service powered by Ultraviolet, designed to help you bypass internet restrictions and access blocked websites securely and privately."
+  />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#434c5e" />
+  <meta name="googlebot" content="index, follow, snippet" />
+  <link rel="shortcut icon" href="https://cgamz.site/favicon.png" type="image/x-icon" />
+  <link rel="stylesheet" href="index.css" />
+  <script src="baremux/index.js" defer></script>
+  <script src="epoxy/index.js" defer></script>
   <script src="uv/uv.bundle.js" defer></script>
   <script src="uv/uv.config.js" defer></script>
+  <script src="register-sw.js" defer></script>
+  <script src="search.js" defer></script>
   <script src="index.js" defer></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Ultraviolet (Web Proxy)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Highly sophisticated proxy used for evading internet censorship or accessing websites in a controlled sandbox using the power of service-workers and more!"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I unblock sites using Ultraviolet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Simply head to an official site featuring Ultraviolet such as Holy Unblocker or Incognito! You can also self-host Ultraviolet on your own web server for maximum privacy."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What if Ultraviolet is blocked or not working?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Join the Titanium Network Discord at discord.gg/unblock!"
+          }
+        }
+      ]
+    }
+  </script>
+
   <style>
-    body {
+    body, html {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #202124;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      overflow-x: hidden;
+      background: none;
+      background-color: #121212;
       color: white;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
 
-    .tab-bar {
+    iframe#bgFrame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      border: none;
+    }
+
+    /* ----- Top Bar Container ----- */
+    #top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      box-shadow: 0 2px 8px rgba(0, 255, 229, 0.3);
+      z-index: 9999;
       display: flex;
-      background: #2c2c2c;
-      padding: 4px;
+      flex-direction: column;
+      user-select: none;
+      font-weight: 600;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ----- Tabs Layer ----- */
+    #tabs-bar {
+      display: flex;
+      align-items: center;
+      height: 38px;
+      padding: 0 12px;
+      border-bottom: 1px solid #00ffe5;
+      background: #000000dd;
+      overflow-x: auto;
+      scrollbar-width: none; /* Firefox */
+    }
+    #tabs-bar::-webkit-scrollbar {
+      display: none;
     }
 
     .tab {
-      background: #3a3a3a;
-      color: white;
-      padding: 6px 12px;
+      color: #4bf9ed;
+      padding: 6px 14px;
+      margin-right: 8px;
       border-radius: 4px 4px 0 0;
       cursor: pointer;
-      margin-right: 4px;
-      user-select: none;
-    }
-
-    .tab.active {
-      background: #444;
-      font-weight: bold;
-    }
-
-    .chrome-bar {
+      background: #111;
+      border: 1px solid transparent;
+      transition: background 0.2s, border-color 0.2s;
+      white-space: nowrap;
+      font-size: 14px;
       display: flex;
       align-items: center;
-      background: #2b2b2b;
-      padding: 6px;
-      gap: 10px;
+    }
+    .tab.active {
+      background: #00ffe5;
+      color: #000;
+      border-color: #00ffe5;
+      font-weight: 700;
+      box-shadow: 0 3px 8px #00ffe5aa;
+    }
+    .tab:hover:not(.active) {
+      background: #002f2f;
+      color: #00ffe5;
     }
 
-    .controls button {
-      background: #4a4a4a;
+    /* ----- URL Bar Layer ----- */
+    #url-bar {
+      display: flex;
+      align-items: center;
+      height: 46px;
+      padding: 0 12px;
+      background: #111;
+      border-bottom: 1px solid #00ffe5;
+    }
+
+    #url-bar button {
+      background: transparent;
       border: none;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 4px;
+      color: #4bf9ed;
+      font-size: 20px;
       cursor: pointer;
-      font-size: 16px;
+      margin-right: 10px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
       user-select: none;
+    }
+    #url-bar button:hover {
+      background: #00ffe5;
+      color: #000;
+      box-shadow: 0 0 10px #00ffe5;
     }
 
     #uv-address {
-      padding: 6px 12px;
-      background: #333;
-      color: white;
-      border: 1px solid #555;
-      border-radius: 6px;
       flex-grow: 1;
-    }
-
-    #uv-address:focus {
-      outline: none;
-      border-color: #00ffe5;
-    }
-
-    .bookmarks-bar {
-      background: #303134;
-      padding: 6px 10px;
-      display: flex;
-      gap: 8px;
-    }
-
-    .bookmarks-bar button {
-      background: #4b4b4b;
+      padding: 8px 16px;
+      font-size: 16px;
+      border-radius: 18px;
+      border: 2px solid #00ffe5;
+      background: rgba(0,0,0,0.7);
       color: white;
-      border: none;
+      outline: none;
+      box-shadow: 0 0 8px #00ffe5;
+      transition: 0.3s ease;
+      font-family: monospace, sans-serif;
+    }
+    #uv-address:focus {
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 15px #00ffe5, 0 0 30px #00ffe5;
+    }
+
+    /* ----- Bookmarks Layer ----- */
+    #bookmarks-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 6px;
       padding: 6px 12px;
-      border-radius: 4px;
+      background: #111;
+      border-bottom: 1px solid #00ffe5;
+    }
+
+    #bookmarks-bar button {
+      background-color: rgba(0, 0, 0, 0.7);
+      border: none;
+      border-radius: 15px;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: #4bf9ed;
       cursor: pointer;
-      font-size: 14px;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      width: 100%;
+      user-select: none;
+    }
+    #bookmarks-bar button:hover {
+      background-color: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 15px #4bf9ed, 0 0 30px #4bf9ed;
+    }
+
+    /* ----- Page Content below top bar ----- */
+    #page-content {
+      padding: 10px 15px;
+      margin-top: calc(38px + 46px + 44px); /* Sum of three bars heights + borders */
+      max-width: 960px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Existing styles adjustments */
+    .flex-center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .logo-wrapper {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    footer {
+      text-align: center;
+      padding: 10px 0;
+      color: white;
+      max-width: 960px;
+      margin: 20px auto 0;
       user-select: none;
     }
 
-    #uv-frame {
-      width: 100%;
-      height: calc(100vh - 108px);
-      border: none;
-      flex-grow: 1;
-      display: block;
+    /* Scrollbar for hot-links fallback in content */
+    #hot-links {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
-
-    #home-content {
-      padding: 20px;
-      flex-grow: 1;
-      background: #181818;
-      overflow-y: auto;
-      display: none;
-      color: white;
+    #hot-links button.hotlink-btn {
+      background-color: rgba(0, 0, 0, 0.7);
+      border: none;
+      border-radius: 15px;
+      padding: 5px 20px;
+      font-size: 14px;
+      color: #4bf9ed;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      width: 100%;
+    }
+    #hot-links button.hotlink-btn:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 15px #4bf9ed, 0 0 30px #4bf9ed;
     }
   </style>
 </head>
+
 <body>
-  <div class="tab-bar" id="tab-bar"></div>
+  <iframe src="bg.html" id="bgFrame"></iframe>
 
-  <div class="chrome-bar">
-    <div class="controls">
-      <button onclick="goHome()" title="Home">🏠</button>
-      <button onclick="goBack()" title="Back">←</button>
-      <button onclick="goForward()" title="Forward">→</button>
-      <button onclick="reloadFrame()" title="Reload">⟳</button>
+  <div id="top-bar">
+    <!-- Tabs layer -->
+    <div id="tabs-bar" role="tablist" aria-label="Browser Tabs">
+      <div class="tab active" role="tab" aria-selected="true" tabindex="0" title="CGPUP">CGPUP</div>
+      <!-- Future tabs could be dynamically added here -->
     </div>
-    <input id="uv-address" type="text" placeholder="Search or enter address" />
+
+    <!-- URL bar layer -->
+    <div id="url-bar">
+      <button id="btn-home" title="Home" aria-label="Home">🏠</button>
+      <button id="btn-back" title="Back" aria-label="Back">◀️</button>
+      <button id="btn-reload" title="Reload" aria-label="Reload">⟳</button>
+      <input
+        id="uv-address"
+        type="text"
+        placeholder="Search the web freely with CGPUP, powered by Ultraviolet"
+        aria-label="Address Bar"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </div>
+
+    <!-- Bookmarks layer -->
+    <div id="bookmarks-bar" aria-label="Bookmarks Bar">
+      <button onclick="quickLaunch('https://youtube.com')" title="YouTube">YouTube</button>
+      <button onclick="quickLaunch('https://www.google.com')" title="Google">Google</button>
+      <button onclick="quickLaunch('https://discord.com')" title="Discord">Discord</button>
+      <button onclick="quickLaunch('https://www.tiktok.com')" title="TikTok">TikTok</button>
+      <button onclick="quickLaunch('https://www.instagram.com')" title="Instagram">Instagram</button>
+      <button onclick="quickLaunch('https://twitter.com')" title="Twitter/X">Twitter/X</button>
+      <button onclick="quickLaunch('https://www.reddit.com')" title="Reddit">Reddit</button>
+      <button onclick="quickLaunch('https://www.twitch.tv')" title="Twitch">Twitch</button>
+      <button onclick="quickLaunch('https://www.disneyplus.com')" title="Disney Plus">Disney Plus</button>
+      <button onclick="quickLaunch('https://www.facebook.com')" title="Facebook">Facebook</button>
+      <button onclick="quickLaunch('https://www.netflix.com')" title="Netflix">Netflix</button>
+      <button onclick="quickLaunch('https://www.linkedin.com')" title="LinkedIn">LinkedIn</button>
+      <button onclick="quickLaunch('https://www.pinterest.com')" title="Pinterest">Pinterest</button>
+      <button onclick="quickLaunch('https://www.snapchat.com')" title="Snapchat">Snapchat</button>
+      <button onclick="quickLaunch('https://web.whatsapp.com')" title="WhatsApp Web">WhatsApp Web</button>
+      <button onclick="quickLaunch('https://github.com')" title="GitHub">GitHub</button>
+    </div>
   </div>
 
-  <div class="bookmarks-bar">
-    <button onclick="navigate('https://youtube.com')">YouTube</button>
-    <button onclick="navigate('https://discord.com')">Discord</button>
-    <button onclick="navigate('https://reddit.com')">Reddit</button>
-    <button onclick="navigate('https://github.com')">GitHub</button>
+  <div id="page-content">
+    <!-- Your existing main content moved here -->
+
+    <div title="Ultraviolet Logo" class="flex-center logo-wrapper header-center">
+      <h1>Search</h1>
+      <span style="color: white;">
+        <strong style="color: #4bf9ed;">C</strong>rafted
+        <strong style="color: #4bf9ed;">G</strong>amz
+        <strong style="color: #4bf9ed;">P</strong>rivate
+        <strong style="color: #4bf9ed;">U</strong>nblocked
+        <strong style="color: #4bf9ed;">P</strong>roxy
+      </span>
+    </div>
+
+    <form id="uv-form" class="flex-center" style="margin-bottom: 20px;">
+      <input
+        id="uv-search-engine"
+        value="https://www.google.com/search?q=%s"
+        type="hidden"
+      />
+      <!-- We keep this input hidden since now #uv-address in URL bar is used -->
+      <!-- But to keep compatibility with your script, we copy #uv-address value on submit -->
+    </form>
+
+    <span
+      style="display: block; text-align: center; margin: 30px 0; font-weight: bold; color: white; font-size: 20px;"
+    >
+      Hotlinks:
+    </span>
+
+    <div
+      id="hot-links"
+      style="
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      "
+    >
+      <button onclick="quickLaunch('https://youtube.com')" class="hotlink-btn" title="YouTube">YouTube</button>
+      <button onclick="quickLaunch('https://www.google.com')" class="hotlink-btn" title="Google">Google</button>
+      <button onclick="quickLaunch('https://discord.com')" class="hotlink-btn" title="Discord">Discord</button>
+      <button onclick="quickLaunch('https://www.tiktok.com')" class="hotlink-btn" title="TikTok">TikTok</button>
+      <button onclick="quickLaunch('https://www.instagram.com')" class="hotlink-btn" title="Instagram">Instagram</button>
+      <button onclick="quickLaunch('https://twitter.com')" class="hotlink-btn" title="Twitter/X">Twitter/X</button>
+      <button onclick="quickLaunch('https://www.reddit.com')" class="hotlink-btn" title="Reddit">Reddit</button>
+      <button onclick="quickLaunch('https://www.twitch.tv')" class="hotlink-btn" title="Twitch">Twitch</button>
+      <button onclick="quickLaunch('https://www.disneyplus.com')" class="hotlink-btn" title="Disney Plus">Disney Plus</button>
+      <button onclick="quickLaunch('https://www.facebook.com')" class="hotlink-btn" title="Facebook">Facebook</button>
+      <button onclick="quickLaunch('https://www.netflix.com')" class="hotlink-btn" title="Netflix">Netflix</button>
+      <button onclick="quickLaunch('https://www.linkedin.com')" class="hotlink-btn" title="LinkedIn">LinkedIn</button>
+      <button onclick="quickLaunch('https://www.pinterest.com')" class="hotlink-btn" title="Pinterest">Pinterest</button>
+      <button onclick="quickLaunch('https://www.snapchat.com')" class="hotlink-btn" title="Snapchat">Snapchat</button>
+      <button onclick="quickLaunch('https://web.whatsapp.com')" class="hotlink-btn" title="WhatsApp Web">WhatsApp Web</button>
+      <button onclick="quickLaunch('https://github.com')" class="hotlink-btn" title="GitHub">GitHub</button>
+    </div>
+
+    <div class="desc left-margin" style="margin-top: 20px;">
+      <p id="uv-error"></p>
+      <pre id="uv-error-code"></pre>
+    </div>
+
+    <footer>
+      <span>Ultraviolet &copy; TN 2023</span><br />
+      <span>CGPUP Frontend &copy; Crafted Gamz 2023 - 2025</span>
+    </footer>
   </div>
 
-  <iframe id="uv-frame"></iframe>
-
-  <div id="home-content">
-    <h2>Welcome to CGPUP Home</h2>
-    <p>This is your proxy home page. Enter a URL above or use bookmarks.</p>
-  </div>
+  <iframe style="display: none;" id="uv-frame"></iframe>
 
   <script>
-    const input = document.getElementById('uv-address');
-    const frame = document.getElementById('uv-frame');
-    const tabBar = document.getElementById('tab-bar');
-    const homeContent = document.getElementById('home-content');
-
-    let tabs = [];
-    let currentTab = 0;
-
-    function createTab(title = 'New Tab', url = 'home.html') {
-      const id = tabs.length;
-      tabs.push({ title, url });
-      renderTabs();
-      switchTab(id);
+    // Re-map quickLaunch to set #uv-address value and submit form
+    function quickLaunch(url) {
+      const input = document.getElementById('uv-address');
+      input.value = url;
+      document.getElementById('uv-form').dispatchEvent(new Event('submit'));
     }
 
-    function switchTab(index) {
-      currentTab = index;
-      const tab = tabs[index];
-      tabBar.querySelectorAll('.tab').forEach((el, i) => {
-        el.classList.toggle('active', i === index);
-      });
+    // Buttons: Home, Back, Reload functionality
+    const btnHome = document.getElementById('btn-home');
+    const btnBack = document.getElementById('btn-back');
+    const btnReload = document.getElementById('btn-reload');
+    const iframe = document.getElementById('uv-frame');
 
-      if (tab.url === 'home.html') {
-        frame.style.display = 'none';
-        homeContent.style.display = 'block';
-        input.value = '';
-      } else {
-        frame.style.display = 'block';
-        homeContent.style.display = 'none';
-        if (!tab.url.startsWith('http')) {
-          frame.src = tab.url;
-          input.value = '';
-        } else {
-          const fullUrl = __uv$config.prefix + __uv$config.encodeUrl(tab.url);
-          frame.src = fullUrl;
-          input.value = tab.url;
-        }
-      }
-    }
+    btnHome.addEventListener('click', () => {
+      const homeUrl = 'https://www.google.com';
+      document.getElementById('uv-address').value = homeUrl;
+      document.getElementById('uv-form').dispatchEvent(new Event('submit'));
+    });
 
-    function renderTabs() {
-      tabBar.innerHTML = '';
-      tabs.forEach((tab, i) => {
-        const el = document.createElement('div');
-        el.className = 'tab' + (i === currentTab ? ' active' : '');
-        el.textContent = tab.title;
-        el.onclick = () => switchTab(i);
-        tabBar.appendChild(el);
-      });
-      const addBtn = document.createElement('div');
-      addBtn.className = 'tab';
-      addBtn.textContent = '+';
-      addBtn.onclick = () => createTab();
-      tabBar.appendChild(addBtn);
-    }
-
-    function navigate(url) {
-      if (!url.startsWith('http')) url = 'https://' + url;
-      tabs[currentTab].url = url;
-      tabs[currentTab].title = new URL(url).hostname;
-      renderTabs();
-      switchTab(currentTab);
-    }
-
-    input.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        navigate(input.value.trim());
+    btnBack.addEventListener('click', () => {
+      // History navigation in iframe is tricky, so just reload last URL if possible
+      if (iframe.contentWindow && iframe.contentWindow.history) {
+        iframe.contentWindow.history.back();
       }
     });
 
-    function goHome() {
-      tabs[currentTab].url = 'home.html';
-      tabs[currentTab].title = 'CGPUP';
-      renderTabs();
-      switchTab(currentTab);
-    }
-
-    function goBack() {
-      try {
-        frame.contentWindow.history.back();
-      } catch {
-        // ignore errors
+    btnReload.addEventListener('click', () => {
+      if (iframe.src) {
+        iframe.contentWindow.location.reload();
       }
-    }
+    });
 
-    function goForward() {
-      try {
-        frame.contentWindow.history.forward();
-      } catch {
-        // ignore errors
-      }
-    }
-
-    function reloadFrame() {
-      try {
-        frame.contentWindow.location.reload();
-      } catch {
-        // ignore errors
-      }
-    }
-
-    window.onload = () => createTab('CGPUP', 'home.html');
+    // Main form handler uses #uv-address in top bar, copy to hidden input for existing logic
+    document.getElementById('uv-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const address = document.getElementById('uv-address').value.trim();
+      if (!address) return;
+      // Copy to hidden input for your script's normal usage
+      document.getElementById('uv-search-engine').value = 'https://www.google.com/search?q=%s'; // keep search engine url if you want
+      // Your proxy bundle expects the form submission, so just trigger it:
+      this.submit();
+    });
   </script>
 </body>
 </html>
