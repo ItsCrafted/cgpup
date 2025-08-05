@@ -92,6 +92,64 @@
       border: 2px solid transparent; 
     }
 
+    .quick-launch-counter {
+      color: #4bf9ed;
+      font-weight: bold;
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .search-dropdown {
+      width: 300px;
+      margin: 0 auto 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    #quickSearch {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid #4bf9ed;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      font-size: 16px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px #4bf9ed;
+    }
+
+    #quickSearch:focus {
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 15px #4bf9ed, 0 0 30px #4bf9ed;
+    }
+
+    #searchResults {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 0 0 10px 10px;
+      z-index: 1;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    #searchResults li {
+      padding: 10px;
+      color: white;
+      cursor: pointer;
+    }
+
+    #searchResults li:hover {
+      background-color: #4bf9ed;
+      color: black;
+    }
+
     h1 {
       font-size: 3rem;
       color: #ffffff;
@@ -248,6 +306,13 @@
 
   <h1>Apps</h1>
 
+  <div class="quick-launch-counter" id="quickLaunchCounter">16 Sites Available</div>
+
+  <div class="search-dropdown">
+    <input type="text" id="quickSearch" placeholder="Search quick launch..." onkeyup="filterQuickLaunch()">
+    <ul id="searchResults"></ul>
+  </div>
+
   <div id="searchContainer" style="display: none;">
     <form id="uv-form" class="flex-center">
       <input
@@ -339,61 +404,68 @@
   <iframe style="display: none;" id="uv-frame"></iframe>
 
 <script>
-  const ipBlacklist = [
-    "",
-    "123.45.67.89"
-  ];
-
-  async function checkIPAndRedirect() {
-    try {
-      const res = await fetch("https://api64.ipify.org?format=json");
-      const data = await res.json();
-      const ip = data.ip;
-
-      if (ipBlacklist.includes(ip)) {
-        window.location.href = "https://www.google.com";
-      }
-    } catch (err) {
-      console.error("IP fetch failed", err);
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", checkIPAndRedirect);
-
   function quickLaunch(url) {
     const input = document.getElementById('uv-address');
     input.value = url;
     document.getElementById('uv-form').dispatchEvent(new Event('submit'));
   }
 
-  // Search function (copied from your search.js)
-  function search(input, template) {
-    const blacklistedDomains = [
-      "pornhub.com", "xvideos.com", "redtube.com", "xnxx.com", "tube8.com", "youjizz.com", "brazzers.com", "bangbros.com", "porn.com", "adultfriendfinder.com", "youporn.com", "spankwire.com", "nuvid.com", "tnaflix.com", "thumbzilla.com", "xhamster.com", "hentaihaven.xxx", "eroprofile.com", "cam4.com", "chaturbate.com",
-      // ... (your full blacklist here)
-    ];
+  // Search functionality from the new document
+  const searchInput = document.getElementById("quickSearch");
+  const searchResults = document.getElementById("searchResults");
 
-    const blacklistedWords = [
-      "adult", "porn", "xxx", "sex", "erotic", "escort", "nude", "naked", "fetish", "hentai", "gayporn", "lesbianporn", "hardcore", "bdsm", "camgirl", "milf", "incest", "teenporn", "anal", "pussy", "dick", "cock", "boobs", "tits", "blowjob", "cum", "orgy", "voyeur", "sexchat", "pornhub", "xvideos", "redtube", "xnxx", "tube8", "youjizz", "brazzers", "bangbros", "xxxvideos", "adultfriendfinder", "pornsite", "sexshop", "erotica", "nudity"
-    ];
+  const quickLaunchBoxes = document.querySelectorAll(".box h3");
 
-    const lowerInput = input.toLowerCase();
+  quickLaunchBoxes.forEach(box => {
+    const li = document.createElement("li");
+    li.textContent = box.textContent;
+    li.addEventListener("click", () => {
+      const targetBox = Array.from(quickLaunchBoxes).find(g => g.textContent === li.textContent);
+      const container = targetBox.closest(".box");
 
-    // Check for blacklisted words
-    for (const word of blacklistedWords) {
-      if (lowerInput.includes(word)) {
-        window.location.href = "no.html";
-        return null;
+      container.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      container.style.boxShadow = "0 0 20px 5px #4bf9ed";
+      container.style.border = "2px solid #4bf9ed";
+
+      setTimeout(() => {
+        container.style.boxShadow = "";
+        container.style.border = "";
+      }, 10000);
+      
+      searchResults.style.display = "none";
+      searchInput.value = "";
+    });
+    searchResults.appendChild(li);
+  });
+
+  function filterQuickLaunch() {
+    const value = searchInput.value.toLowerCase();
+    const items = searchResults.getElementsByTagName("li");
+    let matches = 0;
+
+    for (let item of items) {
+      if (item.textContent.toLowerCase().includes(value)) {
+        item.style.display = "";
+        matches++;
+      } else {
+        item.style.display = "none";
       }
     }
 
+    searchResults.style.display = matches > 0 && value.length > 0 ? "block" : "none";
+  }
+
+  // Count functionality
+  const totalGames = document.querySelectorAll(".box").length;
+  const counter = document.getElementById("quickLaunchCounter");
+  counter.textContent = `App Count: ${totalGames}`;
+
+  // Search function (simplified without blacklists)
+  function search(input, template) {
     // Try to parse as full URL
     try {
       const url = new URL(input);
-      if (blacklistedDomains.includes(url.hostname)) {
-        window.location.href = "no.html";
-        return null;
-      }
       return url.toString();
     } catch (err) {
       // Not a valid URL, continue
@@ -402,10 +474,6 @@
     // Try to parse as domain (add http://)
     try {
       const url = new URL(`http://${input}`);
-      if (blacklistedDomains.includes(url.hostname)) {
-        window.location.href = "no.html";
-        return null;
-      }
       if (url.hostname.includes(".")) return url.toString();
     } catch (err) {
       // Not a valid domain, continue
@@ -439,7 +507,7 @@
         // Process the input through your search function
         const url = search(query, template);
         
-        if (!url) return; // Blocked by search function
+        if (!url) return;
 
         console.log("Navigating to:", url);
 
