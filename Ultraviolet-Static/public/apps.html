@@ -405,9 +405,21 @@
 
 <script>
   function quickLaunch(url) {
+    // Hide search results and clear search input when clicking icons
+    hideSearchResults();
+    
     const input = document.getElementById('uv-address');
     input.value = url;
     document.getElementById('uv-form').dispatchEvent(new Event('submit'));
+  }
+
+  // Function to hide search results and clear input
+  function hideSearchResults() {
+    const searchResults = document.getElementById("searchResults");
+    const searchInput = document.getElementById("quickSearch");
+    
+    searchResults.style.display = "none";
+    searchInput.value = "";
   }
 
   // Search functionality from the new document
@@ -433,8 +445,7 @@
         container.style.border = "";
       }, 10000);
       
-      searchResults.style.display = "none";
-      searchInput.value = "";
+      hideSearchResults();
     });
     searchResults.appendChild(li);
   });
@@ -455,6 +466,13 @@
 
     searchResults.style.display = matches > 0 && value.length > 0 ? "block" : "none";
   }
+
+  // Hide search results when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".search-dropdown")) {
+      hideSearchResults();
+    }
+  });
 
   // Count functionality
   const totalGames = document.querySelectorAll(".box").length;
