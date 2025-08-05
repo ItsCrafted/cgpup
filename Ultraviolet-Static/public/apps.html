@@ -189,6 +189,14 @@
       background-color: #081a2e;
     }
 
+    .box img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
     .box h3 {
       font-size: 1.1em;
       font-weight: bold;
@@ -196,7 +204,7 @@
       color: white;
     }
 
-    nav {
+    .header {
       position: fixed;
       top: 0;
       left: 0;
@@ -220,7 +228,7 @@
       color: #4bf9ed;
     }
 
-    footer {
+    nav {
       text-align: center;
       padding: 10px 0;
       color: white;
@@ -239,7 +247,7 @@
   <iframe src="bg.html" id="bgFrame"></iframe>
 
   <div title="Ultraviolet Logo" class="flex-center logo-wrapper header-center">
-    <h1>Search</h1>
+    <h1>Apps</h1>
     <span style="color: white;">
       <strong style="color: #4bf9ed;">C</strong>rafted 
       <strong style="color: #4bf9ed;">G</strong>amz 
@@ -249,7 +257,7 @@
     </span>
   </div>
 
-  <div id="searchContainer">
+  <div id="searchContainer" style="display: none;">
     <form id="uv-form" class="flex-center">
       <input
         id="uv-search-engine"
@@ -264,51 +272,67 @@
 
   <div class="container">
     <button onclick="quickLaunch('https://youtube.com')" class="box" title="YouTube">
+      <img src="img/aicon/youtube.png" alt="YouTube Icon">
       <h3>YouTube</h3>
     </button>
     <button onclick="quickLaunch('https://www.google.com')" class="box" title="Google">
+      <img src="img/aicon/google.png" alt="Google Icon">
       <h3>Google</h3>
     </button>
     <button onclick="quickLaunch('https://discord.com')" class="box" title="Discord">
+      <img src="img/aicon/discord.png" alt="Discord Icon">
       <h3>Discord</h3>
     </button>
     <button onclick="quickLaunch('https://www.tiktok.com')" class="box" title="TikTok">
+      <img src="img/aicon/tiktok.png" alt="TikTok Icon">
       <h3>TikTok</h3>
     </button>
     <button onclick="quickLaunch('https://www.instagram.com')" class="box" title="Instagram">
+      <img src="img/aicon/instagram.png" alt="Instagram Icon">
       <h3>Instagram</h3>
     </button>
     <button onclick="quickLaunch('https://twitter.com')" class="box" title="Twitter/X">
+      <img src="img/aicon/twitter.png" alt="Twitter Icon">
       <h3>Twitter/X</h3>
     </button>
     <button onclick="quickLaunch('https://www.reddit.com')" class="box" title="Reddit">
+      <img src="img/aicon/reddit.png" alt="Reddit Icon">
       <h3>Reddit</h3>
     </button>
     <button onclick="quickLaunch('https://www.twitch.tv')" class="box" title="Twitch">
+      <img src="img/aicon/twitch.png" alt="Twitch Icon">
       <h3>Twitch</h3>
     </button>
     <button onclick="quickLaunch('https://www.disneyplus.com')" class="box" title="Disney Plus">
+      <img src="img/aicon/disneyplus.png" alt="Disney Plus Icon">
       <h3>Disney Plus</h3>
     </button>
     <button onclick="quickLaunch('https://www.facebook.com')" class="box" title="Facebook">
+      <img src="img/aicon/facebook.png" alt="Facebook Icon">
       <h3>Facebook</h3>
     </button>
     <button onclick="quickLaunch('https://www.netflix.com')" class="box" title="Netflix">
+      <img src="img/aicon/netflix.png" alt="Netflix Icon">
       <h3>Netflix</h3>
     </button>
     <button onclick="quickLaunch('https://www.linkedin.com')" class="box" title="LinkedIn">
+      <img src="img/aicon/linkedin.png" alt="LinkedIn Icon">
       <h3>LinkedIn</h3>
     </button>
     <button onclick="quickLaunch('https://www.pinterest.com')" class="box" title="Pinterest">
+      <img src="img/aicon/pinterest.png" alt="Pinterest Icon">
       <h3>Pinterest</h3>
     </button>
     <button onclick="quickLaunch('https://www.snapchat.com')" class="box" title="Snapchat">
+      <img src="img/aicon/snapchat.png" alt="Snapchat Icon">
       <h3>Snapchat</h3>
     </button>
     <button onclick="quickLaunch('https://web.whatsapp.com')" class="box" title="WhatsApp Web">
+      <img src="img/aicon/whatsapp.png" alt="WhatsApp Icon">
       <h3>WhatsApp Web</h3>
     </button>
     <button onclick="quickLaunch('https://github.com')" class="box" title="GitHub">
+      <img src="img/aicon/github.png" alt="GitHub Icon">
       <h3>GitHub</h3>
     </button>
   </div>
