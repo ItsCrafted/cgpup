@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <title>CGPUP</title>
+  <meta
+    name="description"
+    content="Crafted Gamz Private Unblocked Proxy (CGPUP) is a free web proxy service powered by Ultraviolet, designed to help you bypass internet restrictions and access blocked websites securely and privately."
+  />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#434c5e" />
+  <meta name="googlebot" content="index, follow, snippet" />
+  <link rel="shortcut icon" href="https://cgamz.site/favicon.png" type="image/x-icon" />
+  <link rel="stylesheet" href="index.css" />
+  <script src="baremux/index.js" defer></script>
+  <script src="epoxy/index.js" defer></script>
+  <script src="uv/uv.bundle.js" defer></script>
+  <script src="uv/uv.config.js" defer></script>
+  <script src="register-sw.js" defer></script>
+  <script src="search.js" defer></script>
+  <script src="index.js" defer></script>
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+    }
+
+    iframe#bgFrame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      border: none;
+    }
+
+    #searchContainer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 2;
+      width: 100%;
+    }
+
+    .logo-wrapper h1 {
+      font-size: 2.5rem;
+      margin: 0 0 10px 0;
+      color: #4bf9ed;
+      text-shadow: 0 0 20px rgba(75, 249, 237, 0.5);
+    }
+
+    #uv-address {
+      width: 60%;
+      max-width: 600px;
+      padding: 14px 20px;
+      border-radius: 25px;
+      border: 2px solid #00ffe5;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      font-size: 18px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(0, 255, 229, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    #uv-address:focus {
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 20px rgba(0, 255, 229, 0.6), 0 0 40px rgba(0, 255, 229, 0.3);
+      transform: scale(1.02);
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 20px;
+      text-align: center;
+      z-index: 2;
+      backdrop-filter: blur(10px);
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #4bf9ed;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px 0;
+      color: white;
+    }
+
+    /* Quick Launch Styles inspired by Apps page */
+    .quick-launch-title {
+      color: #4bf9ed;
+      font-weight: bold;
+      font-size: 24px;
+      text-align: center;
+      margin: 40px 0 20px 0;
+      text-shadow: 0 0 15px rgba(75, 249, 237, 0.4);
+      letter-spacing: 1px;
+    }
+
+    .quick-launch-counter {
+      color: #4bf9ed;
+      font-weight: bold;
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+
+    .search-dropdown {
+      width: 300px;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    #quickSearch {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid #4bf9ed;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      font-size: 16px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px rgba(75, 249, 237, 0.3);
+      box-sizing: border-box;
+    }
+
+    #quickSearch:focus {
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 15px rgba(75, 249, 237, 0.5), 0 0 30px rgba(75, 249, 237, 0.2);
+    }
+
+    #searchResults {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 0 0 10px 10px;
+      z-index: 11;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(75, 249, 237, 0.3);
+    }
+
+    #searchResults li {
+      padding: 12px 16px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid rgba(75, 249, 237, 0.1);
+    }
+
+    #searchResults li:hover {
+      background-color: rgba(75, 249, 237, 0.2);
+      color: #4bf9ed;
+    }
+
+    #searchResults li:last-child {
+      border-bottom: none;
+    }
+
+    .quick-launch-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      padding: 0 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .quick-launch-box {
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(75, 249, 237, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      color: white;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 140px;
+      height: 140px;
+      cursor: pointer;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .quick-launch-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(75, 249, 237, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+
+    .quick-launch-box:active {
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    .quick-launch-box.loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+      background: rgba(255, 193, 7, 0.2);
+      border: 2px solid #ffc107;
+    }
+
+    .quick-launch-box .icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+      color: #4bf9ed;
+      text-shadow: 0 0 10px rgba(75, 249, 237, 0.3);
+    }
+
+    .quick-launch-box .text {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+    }
+
+    .loading-spinner {
+      width: 30px;
+      height: 30px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 8px;
+    }
+
+       @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #00ffe5 transparent;
+    }
+
+    *::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background-color: #00ffe5;
+      border-radius: 10px;
+      border: 2px solid transparent; 
+    }
+
+
+    h1 {
+  font-size: 3rem;
+  color: #ffffff;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 3em auto;
+  text-align: center;
+}
+  </style>
+</head>
+
+<body>
+  <iframe src="bg.html" id="bgFrame"></iframe>
+
+  <h1>Apps</h1>
+
+  <div class="quick-launch-counter" id="quickLaunchCounter"></div>
+
+  <div class="search-dropdown">
+    <input type="text" id="quickSearch" placeholder="Search quick launch..." onkeyup="filterQuickLaunch()">
+    <ul id="searchResults"></ul>
+  </div>
+
+  <div class="quick-launch-container">
+    <div class="quick-launch-box" data-url="https://youtube.com" data-platform="youtube">
+      <div class="icon">📺</div>
+      <div class="text">YouTube</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://www.google.com" data-platform="google">
+      <div class="icon">🔍</div>
+      <div class="text">Google</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://discord.com" data-platform="discord">
+      <div class="icon">💬</div>
+      <div class="text">Discord</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://www.tiktok.com" data-platform="tiktok">
+      <div class="icon">🎵</div>
+      <div class="text">TikTok</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://www.instagram.com" data-platform="instagram">
+      <div class="icon">📷</div>
+      <div class="text">Instagram</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://twitter.com" data-platform="twitter">
+      <div class="icon">🐦</div>
+      <div class="text">Twitter/X</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://www.reddit.com" data-platform="reddit">
+      <div class="icon">🤖</div>
+      <div class="text">Reddit</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://www.twitch.tv" data-platform="twitch">
+      <div class="icon">🎮</div>
+      <div class="text">Twitch</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://www.disneyplus.com" data-platform="disney">
+      <div class="icon">🏰</div>
+      <div class="text">Disney Plus</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://www.facebook.com" data-platform="facebook">
+      <div class="icon">👥</div>
+      <div class="text">Facebook</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://www.netflix.com" data-platform="netflix">
+      <div class="icon">🎬</div>
+      <div class="text">Netflix</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://www.linkedin.com" data-platform="linkedin">
+      <div class="icon">💼</div>
+      <div class="text">LinkedIn</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://www.pinterest.com" data-platform="pinterest">
+      <div class="icon">📌</div>
+      <div class="text">Pinterest</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://www.snapchat.com" data-platform="snapchat">
+      <div class="icon">👻</div>
+      <div class="text">Snapchat</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://web.whatsapp.com" data-platform="whatsapp">
+      <div class="icon">💬</div>
+      <div class="text">WhatsApp Web</div>
+    </div>
+
+    <div class="quick-launch-box" data-url="https://github.com" data-platform="github">
+      <div class="icon">⚡</div>
+      <div class="text">GitHub</div>
+    </div>
+  </div>
+
+  <div class="desc left-margin">
+    <p id="uv-error"></p>
+    <pre id="uv-error-code"></pre>
+  </div>
+
+  <footer>
+    <span>Ultraviolet &copy; TN 2023</span>
+    <span>CGPUP Frontend &copy; Crafted Gamz 2023 - 2025</span>
+  </footer>
+
+  <iframe style="display: none;" id="uv-frame"></iframe>
+
+  <script>
+    const ipBlacklist = [
+      "",
+      "123.45.67.89"
+    ];
+
+    async function checkIPAndRedirect() {
+      try {
+        const res = await fetch("https://api64.ipify.org?format=json");
+        const data = await res.json();
+        const ip = data.ip;
+
+        if (ipBlacklist.includes(ip)) {
+          window.location.href = "https://www.google.com";
+        }
+      } catch (err) {
+        console.error("IP fetch failed", err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", checkIPAndRedirect);
+
+    function quickLaunch(url) {
+      const input = document.getElementById('uv-address');
+      input.value = url;
+      document.getElementById('uv-form').dispatchEvent(new Event('submit'));
+    }
+
+    // Quick Launch Search Functionality
+    const searchInput = document.getElementById("quickSearch");
+    const searchResults = document.getElementById("searchResults");
+    const quickLaunchBoxes = document.querySelectorAll(".quick-launch-box .text");
+
+    // Populate search dropdown
+    quickLaunchBoxes.forEach(box => {
+      const li = document.createElement("li");
+      li.textContent = box.textContent;
+      li.addEventListener("click", () => {
+        const targetBox = Array.from(quickLaunchBoxes).find(b => b.textContent === li.textContent);
+        const container = targetBox.closest(".quick-launch-box");
+
+        container.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        container.style.boxShadow = "0 0 20px 5px #4bf9ed";
+        container.style.border = "2px solid #4bf9ed";
+
+        setTimeout(() => {
+          container.style.boxShadow = "";
+          container.style.border = "1px solid rgba(75, 249, 237, 0.3)";
+        }, 3000);
+        
+        searchResults.style.display = "none";
+        searchInput.value = "";
+      });
+      searchResults.appendChild(li);
+    });
+
+    function filterQuickLaunch() {
+      const value = searchInput.value.toLowerCase();
+      const items = searchResults.getElementsByTagName("li");
+      let matches = 0;
+
+      for (let item of items) {
+        if (item.textContent.toLowerCase().includes(value)) {
+          item.style.display = "";
+          matches++;
+        } else {
+          item.style.display = "none";
+        }
+      }
+
+      searchResults.style.display = matches > 0 && value.length > 0 ? "block" : "none";
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
+        searchResults.style.display = 'none';
+      }
+    });
+
+    // Quick Launch click handlers
+    document.querySelectorAll('.quick-launch-box[data-url]').forEach(box => {
+      box.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = box.dataset.url;
+        const name = box.querySelector('.text').textContent;
+        const originalContent = box.innerHTML;
+        
+        // Show loading state
+        box.classList.add('loading');
+        box.innerHTML = `
+          <div class="loading-spinner"></div>
+          <div class="text">Loading ${name}...</div>
+        `;
+
+        setTimeout(() => {
+          quickLaunch(url);
+          box.classList.remove('loading');
+          box.innerHTML = originalContent;
+        }, 800);
+      });
+    });
+
+    // Quick Launch counter
+    const totalQuickLaunch = document.querySelectorAll(".quick-launch-box").length;
+    const counter = document.getElementById("quickLaunchCounter");
+    counter.textContent = `${totalQuickLaunch} Sites Available`;
+
+    // Search function (copied from your search.js)
+    function search(input, template) {
+      const blacklistedDomains = [
+        "pornhub.com", "xvideos.com", "redtube.com", "xnxx.com", "tube8.com", "youjizz.com", "brazzers.com", "bangbros.com", "porn.com", "adultfriendfinder.com", "youporn.com", "spankwire.com", "nuvid.com", "tnaflix.com", "thumbzilla.com", "xhamster.com", "hentaihaven.xxx", "eroprofile.com", "cam4.com", "chaturbate.com",
+      ];
+
+      const blacklistedWords = [
+        "adult", "porn", "xxx", "sex", "erotic", "escort", "nude", "naked", "fetish", "hentai", "gayporn", "lesbianporn", "hardcore", "bdsm", "camgirl", "milf", "incest", "teenporn", "anal", "pussy", "dick", "cock", "boobs", "tits", "blowjob", "cum", "orgy", "voyeur", "sexchat", "pornhub", "xvideos", "redtube", "xnxx", "tube8", "youjizz", "brazzers", "bangbros", "xxxvideos", "adultfriendfinder", "pornsite", "sexshop", "erotica", "nudity"
+      ];
+
+      const lowerInput = input.toLowerCase();
+
+      for (const word of blacklistedWords) {
+        if (lowerInput.includes(word)) {
+          window.location.href = "no.html";
+          return null;
+        }
+      }
+
+      try {
+        const url = new URL(input);
+        if (blacklistedDomains.includes(url.hostname)) {
+          window.location.href = "no.html";
+          return null;
+        }
+        return url.toString();
+      } catch (err) {
+        // Not a valid URL, continue
+      }
+
+      try {
+        const url = new URL(`http://${input}`);
+        if (blacklistedDomains.includes(url.hostname)) {
+          window.location.href = "no.html";
+          return null;
+        }
+        if (url.hostname.includes(".")) return url.toString();
+      } catch (err) {
+        // Not a valid domain, continue
+      }
+
+      return template.replace("%s", encodeURIComponent(input));
+    }
+
+    // Main form handler
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("uv-form");
+      const input = document.getElementById("uv-address");
+      const engine = document.getElementById("uv-search-engine");
+      const frame = document.getElementById("uv-frame");
+      const errorEl = document.getElementById("uv-error");
+      const errorCode = document.getElementById("uv-error-code");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const query = input.value.trim();
+        const template = engine.value;
+        
+        if (!query) return;
+
+        try {
+          errorEl.textContent = "";
+          errorCode.textContent = "";
+
+          const url = search(query, template);
+          
+          if (!url) return;
+
+          console.log("Navigating to:", url);
+
+          if (typeof __uv$config === 'undefined') {
+            throw new Error("Ultraviolet not loaded. Make sure uv.bundle.js and uv.config.js are loaded.");
+          }
+
+          const uvUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
+          
+          frame.src = uvUrl;
+          frame.style.display = "block";
+          
+        } catch (err) {
+          console.error("Navigation error:", err);
+          errorEl.textContent = "Error: " + err.message;
+          errorCode.textContent = err.stack;
+        }
+      });
+
+      console.log("CGPUP Quick Launch initialized");
+    });
+  </script>
+</body>
+</html>
