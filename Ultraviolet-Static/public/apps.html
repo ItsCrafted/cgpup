@@ -405,21 +405,29 @@
 
 <script>
   function quickLaunch(url) {
-    // Hide search results and clear search input when clicking icons
-    hideSearchResults();
+    // Hide the entire search dropdown when clicking icons
+    hideSearchBar();
     
     const input = document.getElementById('uv-address');
     input.value = url;
     document.getElementById('uv-form').dispatchEvent(new Event('submit'));
   }
 
-  // Function to hide search results and clear input
-  function hideSearchResults() {
+  // Function to hide the entire search bar and clear input
+  function hideSearchBar() {
+    const searchDropdown = document.querySelector(".search-dropdown");
     const searchResults = document.getElementById("searchResults");
     const searchInput = document.getElementById("quickSearch");
     
+    searchDropdown.style.display = "none";
     searchResults.style.display = "none";
     searchInput.value = "";
+  }
+
+  // Function to show the search bar
+  function showSearchBar() {
+    const searchDropdown = document.querySelector(".search-dropdown");
+    searchDropdown.style.display = "block";
   }
 
   // Search functionality from the new document
@@ -445,7 +453,7 @@
         container.style.border = "";
       }, 10000);
       
-      hideSearchResults();
+      hideSearchBar();
     });
     searchResults.appendChild(li);
   });
@@ -467,10 +475,11 @@
     searchResults.style.display = matches > 0 && value.length > 0 ? "block" : "none";
   }
 
-  // Hide search results when clicking outside
+  // Hide search bar when clicking outside
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".search-dropdown")) {
-      hideSearchResults();
+      const searchResults = document.getElementById("searchResults");
+      searchResults.style.display = "none";
     }
   });
 
