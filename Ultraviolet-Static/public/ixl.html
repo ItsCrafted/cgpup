@@ -180,9 +180,22 @@
 </span>
 
 <div id="hot-links" style="margin-top: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 600px; margin-left: auto; margin-right: auto;">
-<button id="quickIxlBtn" class="hotlink-btn" title="Quick Access IXL" onclick="quickLaunch('https://www.ixl.com')">
-  Quick Access IXL
-</button>
+  <button onclick="quickLaunch('https://youtube.com')" class="hotlink-btn" title="YouTube">YouTube</button>
+  <button onclick="quickLaunch('https://www.google.com')" class="hotlink-btn" title="Google">Google</button>
+  <button onclick="quickLaunch('https://discord.com')" class="hotlink-btn" title="Discord">Discord</button>
+  <button onclick="quickLaunch('https://www.tiktok.com')" class="hotlink-btn" title="TikTok">TikTok</button>
+  <button onclick="quickLaunch('https://www.instagram.com')" class="hotlink-btn" title="Instagram">Instagram</button>
+  <button onclick="quickLaunch('https://twitter.com')" class="hotlink-btn" title="Twitter/X">Twitter/X</button>
+  <button onclick="quickLaunch('https://www.reddit.com')" class="hotlink-btn" title="Reddit">Reddit</button>
+  <button onclick="quickLaunch('https://www.twitch.tv')" class="hotlink-btn" title="Twitch">Twitch</button>
+  <button onclick="quickLaunch('https://www.disneyplus.com')" class="hotlink-btn" title="Disney Plus">Disney Plus</button>
+  <button onclick="quickLaunch('https://www.facebook.com')" class="hotlink-btn" title="Facebook">Facebook</button>
+  <button onclick="quickLaunch('https://www.netflix.com')" class="hotlink-btn" title="Netflix">Netflix</button>
+  <button onclick="quickLaunch('https://www.linkedin.com')" class="hotlink-btn" title="LinkedIn">LinkedIn</button>
+  <button onclick="quickLaunch('https://www.pinterest.com')" class="hotlink-btn" title="Pinterest">Pinterest</button>
+  <button onclick="quickLaunch('https://www.snapchat.com')" class="hotlink-btn" title="Snapchat">Snapchat</button>
+  <button onclick="quickLaunch('https://web.whatsapp.com')" class="hotlink-btn" title="WhatsApp Web">WhatsApp Web</button>
+  <button onclick="quickLaunch('https://github.com')" class="hotlink-btn" title="GitHub">GitHub</button>
 </div>
 
   <div class="desc left-margin">
@@ -221,6 +234,17 @@
     input.value = url;
     document.getElementById('uv-form').dispatchEvent(new Event('submit'));
   }
+
+  // Search function (copied from your search.js)
+  function search(input, template) {
+    const blacklistedDomains = [
+      "pornhub.com", "xvideos.com", "redtube.com", "xnxx.com", "tube8.com", "youjizz.com", "brazzers.com", "bangbros.com", "porn.com", "adultfriendfinder.com", "youporn.com", "spankwire.com", "nuvid.com", "tnaflix.com", "thumbzilla.com", "xhamster.com", "hentaihaven.xxx", "eroprofile.com", "cam4.com", "chaturbate.com",
+      // ... (your full blacklist here)
+    ];
+
+    const blacklistedWords = [
+      "adult", "porn", "xxx", "sex", "erotic", "escort", "nude", "naked", "fetish", "hentai", "gayporn", "lesbianporn", "hardcore", "bdsm", "camgirl", "milf", "incest", "teenporn", "anal", "pussy", "dick", "cock", "boobs", "tits", "blowjob", "cum", "orgy", "voyeur", "sexchat", "pornhub", "xvideos", "redtube", "xnxx", "tube8", "youjizz", "brazzers", "bangbros", "xxxvideos", "adultfriendfinder", "pornsite", "sexshop", "erotica", "nudity"
+    ];
 
     const lowerInput = input.toLowerCase();
 
@@ -310,55 +334,14 @@
       }
     });
   });
-
-  window.addEventListener('load', () => {
-    if (location.pathname === '/' || location.pathname === '/index.html') {
-        const target = 'https://www.ixl.com/';
-        location.href = __uv$config.prefix + __uv$config.encodeUrl(target);
-    }
-});
-
 </script>
 <button id="injectBtn" style="position:fixed;bottom:20px;right:20px;z-index:999;background:#4bf9ed;color:black;border:none;border-radius:8px;padding:10px 20px;cursor:pointer;">Inject JS</button>
 
 <script>
-document.getElementById('quickIxlBtn').addEventListener('click', async () => {
-  const frame = document.getElementById('uv-frame');
-  if (!frame) return alert('Proxy iframe not found.');
-
-  const targetUrl = 'https://www.ixl.com/';
-  if (typeof __uv$config === 'undefined') return alert('Ultraviolet config not loaded.');
-
-  const uvUrl = __uv$config.prefix + __uv$config.encodeUrl(targetUrl);
-  frame.style.display = 'block';
-  frame.src = uvUrl;
-
-  // Wait 5 seconds before injecting
-  await new Promise(res => setTimeout(res, 5000));
-
-  if (!frame.contentWindow) return alert('Proxy iframe contentWindow not accessible.');
-
-  frame.contentWindow.eval(`(async()=>{
-    const realUrl = __uv$config.decodeUrl(location.pathname.slice(__uv$config.prefix.length));
-    if (!realUrl.includes(atob("aXhsLmNvbQ=="))) return alert("wrong site");
-    if (window.mret) return alert("mret already loaded");
-    window.mret = { api: "https://mret.baby/" };
-    let f = document.createElement("iframe");
-    f.src = "/dv3/" + Math.random().toString(36).slice(2);
-    f.style.display = "none";
-    f.id = "MretContext";
-    document.body.appendChild(f);
-    let w = f.contentWindow;
-    window.mret.context = f;
-    window.mret.fetch = w.fetch.bind(w);
-    let i = setInterval(async () => {
-      let r = await window.mret.fetch(window.mret.api + "client.js?" + Date.now());
-      if (200 === r.status) {
-        clearInterval(i);
-        eval(await r.text());
-      }
-    }, 1000);
-  })();`);
+document.getElementById('injectBtn').addEventListener('click', () => {
+    const frame = document.getElementById('uv-frame');
+    if (!frame || !frame.contentWindow) return alert('No page loaded yet.');
+    frame.contentWindow.eval(`(async()=>{if(!location.hostname.includes(atob("aXhsLmNvbQ==")))return alert("wrong site");if(window.mret)return alert("mret already loaded");window.mret={api:"https://mret.baby/"};let f=document.createElement("iframe");f.src="/dv3/"+Math.random().toString(36).slice(2),f.style.display="none",f.id="MretContext",document.body.appendChild(f);let w=f.contentWindow;window.mret.context=f,window.mret.fetch=w.fetch.bind(w);let i=setInterval(async()=>{let r=await window.mret.fetch(window.mret.api+"client.js?"+Date.now());200===r.status&&(clearInterval(i),eval(await r.text()))},1e3)})();`);
 });
 </script>
 
