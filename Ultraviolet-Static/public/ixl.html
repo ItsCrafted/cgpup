@@ -235,17 +235,6 @@
     document.getElementById('uv-form').dispatchEvent(new Event('submit'));
   }
 
-  // Search function (copied from your search.js)
-  function search(input, template) {
-    const blacklistedDomains = [
-      "pornhub.com", "xvideos.com", "redtube.com", "xnxx.com", "tube8.com", "youjizz.com", "brazzers.com", "bangbros.com", "porn.com", "adultfriendfinder.com", "youporn.com", "spankwire.com", "nuvid.com", "tnaflix.com", "thumbzilla.com", "xhamster.com", "hentaihaven.xxx", "eroprofile.com", "cam4.com", "chaturbate.com",
-      // ... (your full blacklist here)
-    ];
-
-    const blacklistedWords = [
-      "adult", "porn", "xxx", "sex", "erotic", "escort", "nude", "naked", "fetish", "hentai", "gayporn", "lesbianporn", "hardcore", "bdsm", "camgirl", "milf", "incest", "teenporn", "anal", "pussy", "dick", "cock", "boobs", "tits", "blowjob", "cum", "orgy", "voyeur", "sexchat", "pornhub", "xvideos", "redtube", "xnxx", "tube8", "youjizz", "brazzers", "bangbros", "xxxvideos", "adultfriendfinder", "pornsite", "sexshop", "erotica", "nudity"
-    ];
-
     const lowerInput = input.toLowerCase();
 
     // Check for blacklisted words
@@ -334,6 +323,14 @@
       }
     });
   });
+
+  window.addEventListener('load', () => {
+    if (location.pathname === '/' || location.pathname === '/index.html') {
+        const target = 'https://www.ixl.com/';
+        location.href = __uv$config.prefix + __uv$config.encodeUrl(target);
+    }
+});
+
 </script>
 <button id="injectBtn" style="position:fixed;bottom:20px;right:20px;z-index:999;background:#4bf9ed;color:black;border:none;border-radius:8px;padding:10px 20px;cursor:pointer;">Inject JS</button>
 
