@@ -341,8 +341,29 @@
 document.getElementById('injectBtn').addEventListener('click', () => {
     const frame = document.getElementById('uv-frame');
     if (!frame || !frame.contentWindow) return alert('No page loaded yet.');
-    frame.contentWindow.eval(`(async()=>{if(!location.hostname.includes(atob("aXhsLmNvbQ==")))return alert("wrong site");if(window.mret)return alert("mret already loaded");window.mret={api:"https://mret.baby/"};let f=document.createElement("iframe");f.src="/dv3/"+Math.random().toString(36).slice(2),f.style.display="none",f.id="MretContext",document.body.appendChild(f);let w=f.contentWindow;window.mret.context=f,window.mret.fetch=w.fetch.bind(w);let i=setInterval(async()=>{let r=await window.mret.fetch(window.mret.api+"client.js?"+Date.now());200===r.status&&(clearInterval(i),eval(await r.text()))},1e3)})();`);
+    frame.contentWindow.eval(`(async()=>{
+        const realUrl = __uv$config.decodeUrl(location.pathname.slice(__uv$config.prefix.length));
+        if (!realUrl.includes(atob("aXhsLmNvbQ=="))) return alert("wrong site");
+        if (window.mret) return alert("mret already loaded");
+        window.mret = { api: "https://mret.baby/" };
+        let f = document.createElement("iframe");
+        f.src = "/dv3/" + Math.random().toString(36).slice(2);
+        f.style.display = "none";
+        f.id = "MretContext";
+        document.body.appendChild(f);
+        let w = f.contentWindow;
+        window.mret.context = f;
+        window.mret.fetch = w.fetch.bind(w);
+        let i = setInterval(async () => {
+            let r = await window.mret.fetch(window.mret.api + "client.js?" + Date.now());
+            if (200 === r.status) {
+                clearInterval(i);
+                eval(await r.text());
+            }
+        }, 1e3);
+    })();`);
 });
+
 </script>
 
 </body>
